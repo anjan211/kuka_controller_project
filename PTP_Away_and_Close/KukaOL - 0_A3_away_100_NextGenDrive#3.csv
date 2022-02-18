@@ -1,4 +1,4 @@
-Zeit[sec];Sollposition[°];Istposition[°];Positionsschleppfehler[°];Sollgeschwindigkeit[°/s];Istgeschwindigkeit[°/s];Geschwindigkeitsdifferenz[°/s];Sollbeschleunigung[°/s*s];Istbeschleunigung[°/s*s];Beschleunigungsdifferenz[°/s*s]
+Zeit[sec];Sollposition[ï¿½];Istposition[ï¿½];Positionsschleppfehler[ï¿½];Sollgeschwindigkeit[ï¿½/s];Istgeschwindigkeit[ï¿½/s];Geschwindigkeitsdifferenz[ï¿½/s];Sollbeschleunigung[ï¿½/s*s];Istbeschleunigung[ï¿½/s*s];Beschleunigungsdifferenz[ï¿½/s*s]
 0.0;9817499999.0;9817500003.0;-4.0;0.0;-0.00023999999999999998;0.0;0.0;0.0;0.0
 0.004;9817499999.0;9817500003.0;-4.0;0.0;-0.00023999999999999998;0.0;0.0;0.0;0.0
 0.008;9817499999.0;9817500003.0;-4.0;0.0;-0.00023999999999999998;0.0;0.0;0.0;0.0
