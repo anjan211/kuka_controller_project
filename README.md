@@ -18,6 +18,11 @@ Linear and Circular were the two types of continuous path motion types which wer
 
 #### Linear Experiment:
 
+![Linear_test_proposed](https://user-images.githubusercontent.com/56831972/155883775-450dfdbc-9124-4efa-a5cf-711c22c92941.jpg)
+
+As we can see, there were four planned movements on the cuboid designed in the workspace , with two of them tracing the front and the back faces with consequent horizontal and vertical movement. Whereas, the latter two combinations were more related to the diagonal movements across the vertices.
+
+
 
 #### Circular Experiment:
 In circular we had designed three orthogonal complete circular movements, which being similar to a gyroscopic layout and we named them Roll, Pitch and Yaw.
@@ -27,4 +32,4 @@ In circular we had designed three orthogonal complete circular movements, which 
 One thing that was taken into consideration, was that the TCP was operated under a constant orientation over the entire continuous path motion.
 
 
-Comparison strategy and results were collectively demonstrated on our final report which is also mentioned in our final report, present in the repository.
+Comparison strategy and results were collectively demonstrated on our final report which is also , present in the repository and can be easily referred to.
