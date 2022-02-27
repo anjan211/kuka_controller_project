@@ -16,5 +16,6 @@ Here, we mainly combined one axes with the others and analysed their performance
 
 Linear and Circular were the two types of continuous path motion types which were considered and we designed the experiments under the constraint of the workspace. In case of linear, we had designed a cuboid which included three types of linear movements namely: horizontal, vertical and diagonal.
 In circular we had designed three orthogonal complete circular movements, which being similar to a gyroscopic layout and we named them Roll, Pitch and Yaw.
+![Circular_Experiment](https://user-images.githubusercontent.com/56831972/155882962-65e86fb6-8735-433f-aec1-c95960f5bc21.PNG)
 
 Comparison strategy and results were collectively demonstrated on our final report which is also mentioned in our final report, present in the repository.
