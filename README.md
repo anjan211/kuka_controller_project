@@ -15,7 +15,16 @@ It was mainly done to validate the performance of each axes of the robot in the 
 Here, we mainly combined one axes with the others and analysed their performance with varied instructions of angular displacements, with same, higher and lower commands.
 
 Linear and Circular were the two types of continuous path motion types which were considered and we designed the experiments under the constraint of the workspace. In case of linear, we had designed a cuboid which included three types of linear movements namely: horizontal, vertical and diagonal.
+
+#### Linear Experiment:
+
+
+#### Circular Experiment:
 In circular we had designed three orthogonal complete circular movements, which being similar to a gyroscopic layout and we named them Roll, Pitch and Yaw.
-![Circular_Experiment](https://user-images.githubusercontent.com/56831972/155882962-65e86fb6-8735-433f-aec1-c95960f5bc21.PNG)
+
+![Circular_Experiment](https://user-images.githubusercontent.com/56831972/155883093-cb1257f2-8d34-43b7-8646-c9648939a587.PNG)
+
+One thing that was taken into consideration, was that the TCP was operated under a constant orientation over the entire continuous path motion.
+
 
 Comparison strategy and results were collectively demonstrated on our final report which is also mentioned in our final report, present in the repository.
