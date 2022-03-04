@@ -1,0 +1,110 @@
+&ACCESS RVO
+&REL 21
+&PARAM DISKPATH = KRC:\R1\Program\My_Project
+DEF  movement_lin ( )
+;FOLD INI;%{PE}
+  ;FOLD BASISTECH INI
+    GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+    INTERRUPT ON 3 
+    BAS (#INITMOV,0 )
+  ;ENDFOLD (BASISTECH INI)
+  ;FOLD USER INI
+    ;Make your modifications here
+
+  ;ENDFOLD (USER INI)
+;ENDFOLD (INI)
+
+;FOLD SPTP HOME Vel=100 % DEFAULT ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+;SPTP XHOME WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FHOME), $BASE = SBASE(FHOME.BASE_NO), $IPO_MODE = SIPO_MODE(FHOME.IPO_FRAME), $LOAD = SLOAD(FHOME.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PDEFAULT), $APO = SAPO_PTP(PDEFAULT), $GEAR_JERK[1] = SGEAR_JERK(PDEFAULT), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+PTP HOME                                              ;Go to Home position
+;ENDFOLD
+
+
+$BWDSTART = FALSE
+PDAT_ACT=PPDATP
+FDAT_ACT=FP
+BAS (#PTP_PARAMS,100)
+SET_CD_PARAMS(0)
+
+;----------------------------------------------------------------------------------------------------
+;------------------------- RECT 1 -> P1-P2-P4-P3-P1 -------------------------------------------------
+
+;VEL = 40%
+$VEL.CP = 0.8                                           ;Set Cartesian velocity to 40% of the maximum value
+PTP P2                                                  ;PTP movement to Point P1
+LIN P1                                                  ;Linear movement to Point P1
+TraceStart("New_KSS_8.5_1.xml", "Lin_rect1")            ;Start recording trace with the mentioned Trace configuration
+$ORI_TYPE = #CONSTANT                                   ;Set Orientation of the TCP to be CONSTANT
+LIN P2                                                  ;Linear movement to Point P2
+LIN P4                                                  ;Linear movement to Point P4
+LIN P3                                                  ;Linear movement to Point P3
+LIN P1                                                  ;Linear movement to Point P1
+
+TraceStop()
+
+PTP HOME                                                 ;Go to Home position
+
+;----------------------------------------------------------------------------------------------------
+;------------------------- RECT 2 -> P5-P6-P8-P7-P5 -------------------------------------------------
+
+;VEL = 30%
+$VEL.CP = 0.6                                           ;Set Cartesian velocity to 30% of the maximum value
+PTP P6                                                  ;PTP movement to Point P6
+LIN P5                                                  ;Linear movement to Point P5
+TraceStart("New_KSS_8.5_1.xml", "Lin_rect2")            ;Start recording trace with the mentioned Trace configuration
+$ORI_TYPE = #CONSTANT                                   ;Set Orientation of the TCP to be CONSTANT
+LIN P6                                                  ;Linear movement to Point P6
+LIN P8                                                  ;Linear movement to Point P8
+LIN P7                                                  ;Linear movement to Point P7
+LIN P5                                                  ;Linear movement to Point P5
+
+TraceStop()
+
+PTP HOME                                                 ;Go to Home position
+
+;----------------------------------------------------------------------------------------------------
+;------------------------- RECT 3 -> P7-P8-P2-P1-P7 -------------------------------------------------
+
+;VEL = 20%
+$VEL.CP = 0.4                                           ;Set Cartesian velocity to 20% of the maximum value
+PTP P8                                                  ;PTP movement to Point P8
+LIN P7                                                  ;Linear movement to Point P7
+TraceStart("New_KSS_8.5_1.xml", "Lin_rect3")            ;Start recording trace with the mentioned Trace configuration
+$ORI_TYPE = #CONSTANT                                   ;Set Orientation of the TCP to be CONSTANT
+LIN P8                                                  ;Linear movement to Point P8
+LIN P2                                                  ;Linear movement to Point P2
+LIN P1                                                  ;Linear movement to Point P1
+LIN P7                                                  ;Linear movement to Point P7
+
+TraceStop()
+PTP HOME                                                  ;Go to Home position
+
+;----------------------------------------------------------------------------------------------------
+;------------------------- RECT 4 -> P3-P4-P6-P5-P3 -------------------------------------------------
+
+;VEL = 10%
+$VEL.CP = 0.2                                           ;Set Cartesian velocity to 10% of the maximum value
+PTP P4                                                  ;PTP movement to Point P4
+LIN P3                                                  ;Linear movement to Point P3                                                  ;PTP movement to Point P8
+TraceStart("New_KSS_8.5_1.xml", "Lin_rect4")            ;Start recording trace with the mentioned Trace configuration
+$ORI_TYPE = #CONSTANT                                   ;Set Orientation of the TCP to be CONSTANT
+LIN P4                                                  ;Linear movement to Point P4
+LIN P6                                                  ;Linear movement to Point P6
+LIN P5                                                  ;Linear movement to Point P5
+LIN P3                                                  ;Linear movement to Point P3
+
+TraceStop()
+
+PTP HOME                                                  ;Go to Home position
+
+;FOLD SPTP HOME Vel=100 % DEFAULT ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+;SPTP XHOME WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FHOME), $BASE = SBASE(FHOME.BASE_NO), $IPO_MODE = SIPO_MODE(FHOME.IPO_FRAME), $LOAD = SLOAD(FHOME.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PDEFAULT), $APO = SAPO_PTP(PDEFAULT), $GEAR_JERK[1] = SGEAR_JERK(PDEFAULT), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+;ENDFOLD
+
+END

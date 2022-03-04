@@ -1,0 +1,168 @@
+&ACCESS RVO
+&REL 14
+DEF  movement_test_ptp ( )
+
+;FOLD INI
+CONTINUE
+IF NOT $ON_PATH THEN
+  ;FOLD BASISTECH INI
+    GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+    INTERRUPT ON 3 
+    BAS (#INITMOV,0 )
+  ;ENDFOLD (BASISTECH INI)
+  ;FOLD USER INI
+    ;Make your modifications here
+
+  ;ENDFOLD (USER INI)
+ENDIF
+;ENDFOLD (INI)
+
+;FOLD CHECK DAT-FILE GENERATION NUMBER
+  IF APP_GENNUMBER <> 1982218 THEN
+    LOOP
+      MsgQuit("InconsistenceSRCandDAT",,,,1)
+      HALT
+    ENDLOOP
+  ENDIF
+;ENDFOLD
+
+
+;fold Jobinfo
+;Job information: movement_test
+;Product : 3.1.0.28172
+;Date: 2021-03-28-14_30
+;Project name: My_Project
+;Author: My Author
+;Company: My Company
+;Division: My Division
+;Comment: My Comment
+;endfold
+
+;fold Cellmap
+; Training_Cell_Ready2_educate_advanced_KR3
+; Vision_UL
+; Vision
+; Vacuum
+; Deposit_2
+; Shield
+; Deposit
+; KCP4
+; Angle
+; Exercise_2
+; Exercise_1
+; Paint_board_A4
+; Magazine
+; Pin
+; Pen
+; Loop
+; Cube
+; KR 3 R540
+; Gripper_Ready2_educate_advanced_KR3
+;endfold
+;fold Axes definitions
+; Axis1 [-170 170] Rot [deg] (KR 3 R540 : A1)
+; Axis2 [-170 50] Rot [deg] (KR 3 R540 : A2)
+; Axis3 [-110 155] Rot [deg] (KR 3 R540 : A3)
+; Axis4 [-175 175] Rot [deg] (KR 3 R540 : A4)
+; Axis5 [-120 120] Rot [deg] (KR 3 R540 : A5)
+; Axis6 [-350 350] Rot [deg] (KR 3 R540 : A6)
+;endfold
+;fold RobRoot, Tools and Bases used
+; $ROBROOT = {x 0,y 0,z 0,a 0,b 0,c 0}
+; BASE_DATA[1] = {x 229.28,y 282.59,z 209.43,a 0.13,b -0.08,c 179.83}
+; TOOL_DATA[1] = {x 99.33,y -0.64,z 212.16,a 0,b 0,c 0}
+;endfold
+;fold HomePositions
+;endfold
+;FOLD PTP P1 CONT Vel= 100 % PDATP1 Tool[1] Base[1]   ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.old; Kuka.IsGlobalPoint=False; Kuka.PointName=P1; Kuka.BlendingEnabled=True; Kuka.MoveDataPtpName=PDATP1; Kuka.VelocityPtp=100; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=PTP
+;ENDFOLD
+
+;ENDFOLD
+;SPTP XHOME WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FHOME), $BASE = SBASE(FHOME.BASE_NO), $IPO_MODE = SIPO_MODE(FHOME.IPO_FRAME), $LOAD = SLOAD(FHOME.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PDEFAULT), $APO = SAPO_PTP(PDEFAULT), $GEAR_JERK[1] = SGEAR_JERK(PDEFAULT), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+
+;PTP XHOME
+
+;ENDFOLD
+
+;PTP_MOTION(Point, Trace name, Smoothing)
+
+PTP_MOTION(XP1, "A1_PTP_aut", FALSE)
+PTP_MOTION(XP2, "A2_PTP_aut", FALSE)
+PTP_MOTION(XP3, "A3_PTP_aut", FALSE)
+PTP_MOTION(XP4, "A4_PTP_aut", FALSE)
+PTP_MOTION(XP5, "A5_PTP_aut", FALSE)
+PTP_MOTION(XP6, "A6_PTP_aut", FALSE)
+
+PTP XHOME                                    ;Go to Home position
+;ENDFOLD
+
+END
+
+;Function to perform the PTP movement to the given point 'Pt' with velovity 'vel' and record the trace
+DEF PTP_MOTION(Pt: IN, Name[]: IN, smoothing: IN)
+E6AXIS Pt
+CHAR Name[]
+BOOL smoothing
+
+PTP XHOME                                           ;Go to Home position
+
+TraceStart("New_KSS_8.5_1.xml", Name[])            ;Start recording trace with the mentioned Trace configuration
+$BWDSTART = FALSE
+PDAT_ACT=PPDATP
+FDAT_ACT=FP
+BAS (#PTP_PARAMS,100)
+SET_CD_PARAMS (0)
+
+IF smoothing THEN
+   PTP Pt C_DIS                                    ;PTP to given point 'Pt' with distance smoothing 'C_DIS'
+ELSE
+   PTP Pt                                          ;PTP to given point 'Pt'
+ENDIF
+
+IF CompareStruc(Pt, XP1) THEN                      ;Compare Pt with XP1
+ PTP{A1 -30}                                       ;PTP A1 to -30
+ PTP{A1 20}                                        ;PTP A1 to 20
+ELSE
+   IF CompareStruc(Pt, XP2) THEN                   ;Compare Pt with XP2
+      PTP{A2 -70}                                  ;PTP A2 to -70
+      PTP{A2 -100}                                 ;PTP A2 to -100
+   ELSE
+      IF CompareStruc(Pt, XP3) THEN                ;Compare Pt with XP3
+         PTP{A3 115}                               ;PTP A3 to 115
+         PTP{A3 85}                                ;PTP A3 to 85
+      ELSE
+         IF CompareStruc(Pt, XP4) THEN             ;Compare Pt with XP4
+            PTP{A4 0}                              ;PTP A4 to 0
+            PTP{A4 -170}                           ;PTP A4 to -170
+         ELSE
+            IF CompareStruc(Pt, XP5) THEN          ;Compare Pt with XP5
+               PTP{A5 0}                           ;PTP A5 to 0
+               PTP{A5 -90}                         ;PTP A5 to -90
+            ELSE
+               IF CompareStruc(Pt, XP6) THEN       ;Compare Pt with XP6
+                  PTP{A6 0}                        ;PTP A6 to 0
+                  PTP{A6 -170}                     ;PTP A6 to -170
+               ENDIF
+            ENDIF
+         ENDIF
+      ENDIF
+   ENDIF
+ENDIF
+
+TraceStop()
+
+END
+
+;Function to compare two structures and return true if they are equal
+DEFFCT BOOL CompareStruc(First: IN, Second: IN)
+
+E6AXIS First, Second
+
+IF((First.A1 == Second.A1) AND (First.A2 == Second.A2) AND (First.A3 == Second.A3) AND (First.A4 == Second.A4) AND (First.A5 == Second.A5) AND (First.A6 == Second.A6)) THEN
+   RETURN TRUE
+ELSE
+   RETURN FALSE
+ENDIF
+ENDFCT

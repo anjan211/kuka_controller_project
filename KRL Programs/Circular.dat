@@ -1,0 +1,33 @@
+&ACCESS RVO
+&REL 2
+&PARAM DISKPATH = KRC:\R1\Program\My_Project
+DEFDAT Circular
+;FOLD EXTERNAL DECLARATIONS;%{PE}%MKUKATPBASIS,%CEXT,%VCOMMON,%P
+;FOLD BASISTECH EXT;%{PE}%MKUKATPBASIS,%CEXT,%VEXT,%P
+EXT  BAS (BAS_COMMAND  :IN,REAL  :IN )
+DECL INT SUCCESS
+;ENDFOLD (BASISTECH EXT)
+;FOLD USER EXT;%{E}%MKUKATPUSER,%CEXT,%VEXT,%P
+;Make your modifications here
+
+DECL E6AXIS XHOME = {A1 0.0, A2 -110.0, A3 110.0, A4 0.0, A5 0.0, A6 0.0}                  ;Home Position
+
+DECL PDAT PPDATP={VEL 100.000,ACC 100.000,APO_DIST 100.000,APO_MODE #CDIS,GEAR_JERK 100.000,EXAX_IGN 0}     ;Set the kinematic values such as max velocity, max acceleration, etc
+DECL FDAT FP={TOOL_NO 14,BASE_NO 0,IPO_FRAME #BASE,POINT2[] " ",TQ_STATE FALSE}                             ;Set the tool and base for coordinate transformation
+
+DECL E6POS P1 = {X 250.0, Y -450.0, Z 400.0, A 0.0, B 45, C 0.0, S 2, T 10}                 ;Point P1
+DECL E6POS P_aux1 = {X 250.0, Y -300.0, Z 250.0, A 0.0, B 45, C 0.0, S 2, T 10}             ;Point P_aux1
+DECL E6POS P2 = {X 250.0, Y -150.0, Z 400.0, A 0.0, B 45, C 0.0, S 2, T 10}                 ;Point P2
+
+DECL E6POS P3 = {X 250.0, Y -450.0, Z 400.0, A -12.32, B 82.93, C -12.5, S 2, T 10}         ;Point P3
+DECL E6POS P_aux2 = {X 400.0, Y -300.0, Z 400.0, A -12.32, B 82.93, C -12.5, S 2, T 10}     ;Point P_aux2
+DECL E6POS P4 = {X 250.0, Y -150.0, Z 400.0, A -12.32, B 82.93, C -12.5, S 2, T 10}         ;Point P4
+
+DECL E6POS P5 = {X 400.0, Y -300.0, Z 400.0, A 0.0, B 45.0, C 0.0, S 2, T 10}               ;Point P5
+DECL E6POS P_aux3 = {X 250.0, Y -300.0, Z 250.0, A 0.0, B 45.0, C 0.0, S 2, T 10}           ;Point P_aux3
+DECL E6POS P6 = {X 100.0, Y -300.0, Z 400.0, A 0.0, B 45.0, C 0.0, S 2, T 10}               ;Point P6
+
+
+;ENDFOLD (USER EXT)
+;ENDFOLD (EXTERNAL DECLARATIONS)
+ENDDAT

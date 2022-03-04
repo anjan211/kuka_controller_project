@@ -1,0 +1,125 @@
+&ACCESS RVP
+DEF  PTP_away ( )
+;FOLD INI;%{PE}
+  ;FOLD BASISTECH INI
+    GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+    INTERRUPT ON 3 
+    BAS (#INITMOV,0 )
+  ;ENDFOLD (BASISTECH INI)
+  ;FOLD USER INI
+    ;Make your modifications here
+
+  ;ENDFOLD (USER INI)
+;ENDFOLD (INI)
+
+;FOLD SPTP HOME Vel=100 % DEFAULT ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+PTP XHOME                                    ;Go to Home position
+;ENDFOLD
+
+;PTP_MOTION(Point, Trace name, Smoothing, velocity)
+
+;------------------------------10% Velocity-------------------------------------------;
+;------------------------------            -------------------------------------------;
+PTP_MOTION(XP1, "A1_away_10", FALSE, 10)
+PTP_MOTION(XP2, "A2_away_10", FALSE, 10)
+PTP_MOTION(XP3, "A3_away_10", FALSE, 10)
+
+;------------------------------50% Velocity-------------------------------------------;
+;------------------------------            -------------------------------------------;
+PTP_MOTION(XP1, "A1_away_50", FALSE, 50)
+PTP_MOTION(XP2, "A2_away_50", FALSE, 50)
+PTP_MOTION(XP3, "A3_away_50", FALSE, 50)
+
+;------------------------------70% Velocity-------------------------------------------;
+;------------------------------            -------------------------------------------;
+PTP_MOTION(XP1, "A1_away_70", FALSE, 70)
+PTP_MOTION(XP2, "A2_away_70", FALSE, 70)
+PTP_MOTION(XP3, "A3_away_70", FALSE, 70)
+
+;------------------------------100% Velocity-------------------------------------------;
+;------------------------------            -------------------------------------------;
+PTP_MOTION(XP1, "A1_away_100", FALSE, 100)
+PTP_MOTION(XP2, "A2_away_100", FALSE, 100)
+PTP_MOTION(XP3, "A3_away_100", FALSE, 100)
+
+
+;FOLD SPTP HOME Vel=100 % DEFAULT ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+PTP XHOME                                    ;Go to Home position
+;ENDFOLD
+
+END
+
+;Function to perform the PTP movement to the given point 'Pt' with velovity 'vel' and record the trace
+DEF PTP_MOTION(Pt: IN, Name[]: IN, smoothing: IN, vel: IN)
+E6AXIS Pt
+CHAR Name[]
+BOOL smoothing
+INT vel
+
+PTP XHOME                                    ;Go to Home position
+
+TraceStart("New_KSS_8.5_1.xml", Name[])      ;Start recording trace with the mentioned Trace configuration
+$BWDSTART = FALSE
+PDAT_ACT=PPDATP
+FDAT_ACT=FP
+BAS (#PTP_PARAMS,100)
+SET_CD_PARAMS (0)
+
+IF smoothing THEN
+   PTP_VEL(vel)                              ;Set axis velocity to the value of 'vel'
+   PTP Pt C_DIS                              ;PTP to given point 'Pt' with distance smoothing 'C_DIS'
+ELSE
+   PTP_VEL(vel)                              ;Set axis velocity to the value of 'vel'
+   PTP Pt                                    ;PTP to given point 'Pt'
+ENDIF
+
+IF CompareStruc(Pt, XP1) THEN                ;Compare Pt with XP1
+ PTP_VEL(vel)                                ;Set axis velocity to the value of 'vel'
+ PTP{A1 -60}                                 ;PTP A1 to -60
+ELSE
+   IF CompareStruc(Pt, XP2) THEN             ;Compare Pt with XP2
+      PTP_VEL(vel)                           ;Set axis velocity to the value of 'vel'
+      PTP{A2 -35}                            ;PTP A2 to -35
+   ELSE
+      IF CompareStruc(Pt, XP3) THEN          ;Compare Pt with XP3
+         PTP_VEL(vel)                        ;Set axis velocity to the value of 'vel'
+         PTP{A3 80}                         ;PTP A3 to 80
+      ENDIF
+   ENDIF
+ENDIF
+
+TraceStop()
+
+END
+
+;Function to compare two structures and return true if they are equal
+DEFFCT BOOL CompareStruc(First: IN, Second: IN)
+
+E6AXIS First, Second
+
+IF((First.A1 == Second.A1) AND (First.A2 == Second.A2) AND (First.A3 == Second.A3) AND (First.A4 == Second.A4) AND (First.A5 == Second.A5) AND (First.A6 == Second.A6)) THEN
+   RETURN TRUE
+ELSE
+   RETURN FALSE
+ENDIF
+ENDFCT
+
+;Function to set the velocity of each axis with the value of 'vel'
+DEF PTP_VEL(vel: IN)
+
+INT vel
+
+$VEL_AXIS[1] = vel
+$VEL_AXIS[2] = vel
+$VEL_AXIS[3] = vel
+$VEL_AXIS[4] = vel
+$VEL_AXIS[5] = vel
+$VEL_AXIS[6] = vel
+
+END

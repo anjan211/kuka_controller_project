@@ -1,0 +1,352 @@
+&ACCESS RVO
+DEF  PTP_combined_v3 ( )
+;FOLD INI;%{PE}
+  ;FOLD BASISTECH INI
+    GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+    INTERRUPT ON 3 
+    BAS (#INITMOV,0 )
+  ;ENDFOLD (BASISTECH INI)
+  ;FOLD USER INI
+    ;Make your modifications here
+
+  ;ENDFOLD (USER INI)
+;ENDFOLD (INI)
+
+;FOLD SPTP HOME Vel=100 % DEFAULT ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+PTP XHOME                                    ;Go to Home position
+;ENDFOLD
+
+PTP_MOTION(10)                               ;Do the PTP movement for each axis in combination with other axis at 10% velocity
+
+;FOLD SPTP HOME Vel=100 % DEFAULT ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+PTP XHOME                                    ;Go to Home position
+;ENDFOLD
+
+END
+
+DEF PTP_MOTION(vel: IN)
+
+INT vel
+PTP XHOME                                    ;Go to Home position
+
+$BWDSTART = FALSE
+PDAT_ACT=PPDATP
+FDAT_ACT=FP
+BAS (#PTP_PARAMS,100)
+SET_CD_PARAMS (0)
+
+PTP_VEL(vel)                                 ;Set axis velocity to the value of 'vel'
+
+;-----------------------Record traces of isolated axis movements-------------------------------------;
+
+TraceStart("New_KSS_8.5_1.xml", "A1_isolated")
+PTP {A1 60}                                  ;PTP A1 to 60
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A2_isolated")
+PTP {A2 -130}                                ;PTP A2 to -130
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A3_isolated")
+PTP {A3 75}                                  ;PTP A3 to 75
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A4_isolated")
+PTP {A4 90}                                  ;PTP A4 to 90
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A5_isolated")
+PTP {A5 60}                                  ;PTP A5 to 60
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A6_isolated")
+PTP {A6 -100}                                 ;PTP A6 to -100
+PTP XHOME
+TraceStop()
+
+;-----------------------------------------------------------------------------
+;-------------------------Combination of A1 with A2---------------------------
+
+TraceStart("New_KSS_8.5_1.xml", "A1_A2_1")
+PTP {A1 60, A2 -130}                          ;PTP A1 to 60 and A2 to -130
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A1_A2_2")
+PTP {A1 10, A2 -130}                          ;PTP A1 to 10 and A2 to -130
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A1_A2")
+PTP {A1 20, A2 -130}                          ;PTP A1 to 20 and A2 to -130
+PTP XHOME
+TraceStop()
+
+;-------------------------Combination of A1 with A3---------------------------
+
+TraceStart("New_KSS_8.5_1.xml", "A1_A3_1")
+PTP{A1 60, A3 75}                          ;PTP A1 to 60 and A3 to 75
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A1_A3_2")
+PTP{A1 25, A3 75}                          ;PTP A1 to 25 and A3 to 75
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A1_A3")
+PTP{A1 20, A3 90}                          ;PTP A1 to 20 and A3 to 90
+PTP XHOME
+TraceStop()
+
+;-------------------------Combination of A1 with A4---------------------------
+
+TraceStart("New_KSS_8.5_1.xml", "A1_A4_2")
+PTP{A1 60, A4 90}                          ;PTP A1 to 60 and A4 to 90
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A1_A4_1")
+PTP{A1 60, A4 30}                          ;PTP A1 to 60 and A4 to 30
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A1_A4")
+PTP{A1 60, A4 60}                          ;PTP A1 to 60 and A4 to 60
+PTP XHOME
+TraceStop()
+
+;-------------------------Combination of A1 with A5---------------------------
+
+TraceStart("New_KSS_8.5_1.xml", "A1_A5_1")
+PTP{A1 60, A5 45}                          ;PTP A1 to 60 and A5 to 45
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A1_A5_2")
+PTP{A1 30, A5 60}                          ;PTP A1 to 30 and A5 to 60
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A1_A5")
+PTP{A1 50, A5 50}                          ;PTP A1 to 50 and A5 to 50
+PTP XHOME
+TraceStop()
+
+;-------------------------Combination of A1 with A6---------------------------
+
+TraceStart("New_KSS_8.5_1.xml", "A1_A6_2")
+PTP{A1 60, A6 -100}                          ;PTP A1 to 60 and A6 to -100
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A1_A6_1")
+PTP{A1 60, A6 -40}                          ;PTP A1 to 60 and A6 to -40
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A1_A6")
+PTP{A1 60, A6 -60}                          ;PTP A1 to 60 and A6 to -60
+PTP XHOME
+TraceStop()
+
+;-----------------------------------------------------------------------------
+;-------------------------Combination of A2 with A3---------------------------
+
+TraceStart("New_KSS_8.5_1.xml", "A2_A3_2")
+PTP{A2 -130, A3 75}                          ;PTP A2 to -130 and A3 to 75
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A2_A3_1")
+PTP{A2 -130, A3 100}                          ;PTP A2 to -130 and A3 to 100
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A2_A3")
+PTP{A2 -130, A3 90}                          ;PTP A2 to -130 and A3 to 90
+PTP XHOME
+TraceStop()
+
+;-------------------------Combination of A2 with A4---------------------------
+
+TraceStart("New_KSS_8.5_1.xml", "A2_A4_2")
+PTP{A2 -130, A4 90}                          ;PTP A2 to -130 and A4 to 90
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A2_A4_1")
+PTP{A2 -130, A4 10}                          ;PTP A2 to -130 and A4 to 10
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A2_A4")
+PTP{A2 -130, A4 20}                          ;PTP A2 to -130 and A4 to 20
+PTP XHOME
+TraceStop()
+
+;-------------------------Combination of A2 with A5---------------------------
+
+TraceStart("New_KSS_8.5_1.xml", "A2_A5_2")
+PTP{A2 -130, A5 60}                          ;PTP A2 to -130 and A5 to 60
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A2_A5_1")
+PTP{A2 -130, A5 10}                          ;PTP A2 to -130 and A5 to 10
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A2_A5")
+PTP{A2 -130, A5 20}                          ;PTP A2 to -130 and A5 to 20
+PTP XHOME
+TraceStop()
+
+;-------------------------Combination of A2 with A6---------------------------
+
+TraceStart("New_KSS_8.5_1.xml", "A2_A6_2")
+PTP{A2 -130, A6 -100}                          ;PTP A2 to -130 and A6 to -100
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A2_A6_1")
+PTP{A2 -130, A6 -10}                          ;PTP A2 to -130 and A6 to -10
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A2_A6")
+PTP{A2 -130, A6 -20}                          ;PTP A2 to -130 and A6 to -20
+PTP XHOME
+TraceStop()
+
+;-----------------------------------------------------------------------------
+;-------------------------Combination of A3 with A4---------------------------
+
+TraceStart("New_KSS_8.5_1.xml", "A3_A4_2")
+PTP{A3 75, A4 90}                          ;PTP A3 to 75 and A4 to 90
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A3_A4_1")
+PTP{A3 75, A4 20}                          ;PTP A3 to 75 and A4 to 20
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A3_A4")
+PTP{A3 90, A4 20}                          ;PTP A3 to 90 and A4 to 20
+PTP XHOME
+TraceStop()
+
+;-------------------------Combination of A3 with A5---------------------------
+
+TraceStart("New_KSS_8.5_1.xml", "A3_A5_2")
+PTP{A3 75, A5 60}                          ;PTP A3 to 75 and A5 to 60
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A3_A5_1")
+PTP{A3 75, A5 20}                          ;PTP A3 to 75 and A5 to 20
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A3_A5")
+PTP{A3 90, A5 20}                          ;PTP A3 to 90 and A5 to 20
+PTP XHOME
+TraceStop()
+
+;-------------------------Combination of A3 with A6---------------------------
+
+TraceStart("New_KSS_8.5_1.xml", "A3_A6_2")
+PTP{A3 75, A6 -100}                          ;PTP A3 to 75 and A6 to -100
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A3_A6_1")
+PTP{A3 75, A6 -20}                          ;PTP A3 to 75 and A6 to -20
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A3_A6")
+PTP{A3 90, A6 -20}                          ;PTP A3 to 90 and A6 to -20
+PTP XHOME
+TraceStop()
+
+;-----------------------------------------------------------------------------
+;-------------------------Combination of A4 with A5---------------------------
+
+TraceStart("New_KSS_8.5_1.xml", "A4_A5_1")
+PTP{A4 90, A5 60}                          ;PTP A4 to 90 and A5 to 60
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A4_A5_2")
+PTP{A4 90, A5 100}                          ;PTP A4 to 90 and A5 to 100
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A4_A5")
+PTP{A4 20, A5 20}                          ;PTP A4 to 20 and A5 to 20
+PTP XHOME
+TraceStop()
+
+;-------------------------Combination of A4 with A6---------------------------
+
+TraceStart("New_KSS_8.5_1.xml", "A4_A6_2")
+PTP{A4 90, A6 -100}                          ;PTP A4 to 90 and A6 to -100
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A4_A6_1")
+PTP{A4 120, A6 -100}                          ;PTP A4 to 120 and A6 to -100
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A4_A6")
+PTP{A4 20, A6 -20}                          ;PTP A4 to 20 and A6 to -20
+PTP XHOME
+TraceStop()
+
+;-----------------------------------------------------------------------------
+;-------------------------Combination of A5 with A6---------------------------
+
+TraceStart("New_KSS_8.5_1.xml", "A5_A6_2")
+PTP{A5 60, A6 -100}                          ;PTP A5 to 60 and A6 to -100
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A5_A6_1")
+PTP{A5 60, A6 -30}                          ;PTP A5 to 60 and A6 to -30
+PTP XHOME
+TraceStop()
+
+TraceStart("New_KSS_8.5_1.xml", "A5_A6")
+PTP{A5 20, A6 -20}                          ;PTP A5 to 20 and A6 to -20
+PTP XHOME
+TraceStop()
+
+END
+
+;Function to set the velocity of each axis with the value of 'vel'
+DEF PTP_VEL(vel: IN)
+
+INT vel
+
+$VEL_AXIS[1] = vel
+$VEL_AXIS[2] = vel
+$VEL_AXIS[3] = vel
+$VEL_AXIS[4] = vel
+$VEL_AXIS[5] = vel
+$VEL_AXIS[6] = vel
+
+END

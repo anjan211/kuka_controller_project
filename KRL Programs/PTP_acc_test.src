@@ -1,0 +1,159 @@
+&ACCESS RVO
+DEF  ptp_acc_test ( )
+;FOLD INI;%{PE}
+  ;FOLD BASISTECH INI
+    GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+    INTERRUPT ON 3 
+    BAS (#INITMOV,0 )
+  ;ENDFOLD (BASISTECH INI)
+  ;FOLD USER INI
+    ;Make your modifications here
+
+  ;ENDFOLD (USER INI)
+;ENDFOLD (INI)
+
+;FOLD SPTP HOME Vel=100 % DEFAULT ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+PTP XHOME                                    ;Go to Home position
+;ENDFOLD
+
+;PTP_MOTION(Point, Trace name, Smoothing, Acceleration)
+
+;-------------Program Override - 85% / Jog Override - 10%----------------------------;
+
+;------------------------------10% Velocity-------------------------------------------;
+;------------------------------            -------------------------------------------;
+PTP_MOTION(XP1, "A1_PTP_ACC_10_po85", FALSE, 10)
+PTP_MOTION(XP2, "A2_PTP_ACC_10_po85", FALSE, 10)
+PTP_MOTION(XP3, "A3_PTP_ACC_10_po85", FALSE, 10)
+PTP_MOTION(XP4, "A4_PTP_ACC_10_po85", FALSE, 10)
+PTP_MOTION(XP5, "A5_PTP_ACC_10_po85", FALSE, 10)
+PTP_MOTION(XP6, "A6_PTP_ACC_10_po85", FALSE, 10)
+
+;------------------------------50% Velocity-------------------------------------------;
+;------------------------------            -------------------------------------------;
+PTP_MOTION(XP1, "A1_PTP_ACC_50_po85", FALSE, 50)
+PTP_MOTION(XP2, "A2_PTP_ACC_50_po85", FALSE, 50)
+PTP_MOTION(XP3, "A3_PTP_ACC_50_po85", FALSE, 50)
+PTP_MOTION(XP4, "A4_PTP_ACC_50_po85", FALSE, 50)
+PTP_MOTION(XP5, "A5_PTP_ACC_50_po85", FALSE, 50)
+PTP_MOTION(XP6, "A6_PTP_ACC_50_po85", FALSE, 50)
+
+;------------------------------70% Velocity-------------------------------------------;
+;------------------------------            -------------------------------------------;
+PTP_MOTION(XP1, "A1_PTP_ACC_70_po85", FALSE, 70)
+PTP_MOTION(XP2, "A2_PTP_ACC_70_po85", FALSE, 70)
+PTP_MOTION(XP3, "A3_PTP_ACC_70_po85", FALSE, 70)
+PTP_MOTION(XP4, "A4_PTP_ACC_70_po85", FALSE, 70)
+PTP_MOTION(XP5, "A5_PTP_ACC_70_po85", FALSE, 70)
+PTP_MOTION(XP6, "A6_PTP_ACC_70_po85", FALSE, 70)
+
+;------------------------------100% Velocity-------------------------------------------;
+;------------------------------            -------------------------------------------;
+PTP_MOTION(XP1, "A1_PTP_ACC_100_po85", FALSE, 100)
+PTP_MOTION(XP2, "A2_PTP_ACC_100_po85", FALSE, 100)
+PTP_MOTION(XP3, "A3_PTP_ACC_100_po85", FALSE, 100)
+PTP_MOTION(XP4, "A4_PTP_ACC_100_po85", FALSE, 100)
+PTP_MOTION(XP5, "A5_PTP_ACC_100_po85", FALSE, 100)
+PTP_MOTION(XP6, "A6_PTP_ACC_100_po85", FALSE, 100)
+
+;FOLD SPTP HOME Vel=100 % DEFAULT ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+PTP XHOME                                    ;Go to Home position
+;ENDFOLD
+
+END
+
+;Function to perform the PTP movement to the given point 'Pt' with accleration 'acc' and record the trace
+DEF PTP_MOTION(Pt: IN, Name[]: IN, smoothing: IN, acc: IN)
+E6AXIS Pt
+CHAR Name[]
+BOOL smoothing
+INT acc
+
+PTP XHOME                                          ;Go to Home position
+
+TraceStart("New_KSS_8.5_1.xml", Name[])            ;Start recording trace with the mentioned Trace configuration
+$BWDSTART = FALSE
+PDAT_ACT=PPDATP
+FDAT_ACT=FP
+BAS (#PTP_PARAMS,100)
+SET_CD_PARAMS (0)
+
+IF smoothing THEN
+   PTP_ACC(acc)                                    ;Set axis acceleration to the value of 'acc'
+   PTP Pt C_DIS                                    ;PTP to given point 'Pt' with distance smoothing 'C_DIS'
+ELSE
+   PTP_ACC(acc)                                    ;Set axis acceleration to the value of 'acc'
+   PTP Pt                                          ;PTP to given point 'Pt'
+ENDIF
+
+IF CompareStruc(Pt, XP1) THEN                      ;Compare Pt with XP1
+ PTP_ACC(acc)                                      ;Set axis acceleration to the value of 'acc'
+ PTP{A1 -30}                                       ;PTP A1 to -30 
+ PTP{A1 -80}                                       ;PTP A1 to -80
+ELSE
+   IF CompareStruc(Pt, XP2) THEN                   ;Compare Pt with XP2
+      PTP_ACC(acc)                                 ;Set axis acceleration to the value of 'acc'
+      PTP{A2 -70}                                  ;PTP A2 to -70      
+      PTP{A2 -40}                                  ;PTP A2 to -40
+   ELSE
+      IF CompareStruc(Pt, XP3) THEN                ;Compare Pt with XP3
+         PTP_ACC(acc)                              ;Set axis acceleration to the value of 'acc'
+         PTP{A3 115}                               ;PTP A3 to 115
+         PTP{A3 145}                               ;PTP A3 to 145
+      ELSE
+         IF CompareStruc(Pt, XP4) THEN             ;Compare Pt with XP4
+            PTP_ACC(acc)                           ;Set axis acceleration to the value of 'acc'
+            PTP{A4 0}                              ;PTP A4 to 0
+            PTP{A4 170}                            ;PTP A4 to 170
+         ELSE
+            IF CompareStruc(Pt, XP5) THEN          ;Compare Pt with XP5
+               PTP_ACC(acc)                        ;Set axis acceleration to the value of 'acc'
+               PTP{A5 0}                           ;PTP A5 to 0
+               PTP{A5 90}                          ;PTP A5 to 90
+            ELSE
+               IF CompareStruc(Pt, XP6) THEN       ;Compare Pt with XP6
+                  PTP_ACC(acc)                     ;Set axis acceleration to the value of 'acc'
+                  PTP{A6 0}                        ;PTP A6 to 0
+                  PTP{A6 170}                      ;PTP A6 to 170
+               ENDIF
+            ENDIF
+         ENDIF
+      ENDIF
+   ENDIF
+ENDIF
+
+TraceStop()
+
+END
+
+;Function to compare two structures and return true if they are equal
+DEFFCT BOOL CompareStruc(First: IN, Second: IN)
+
+E6AXIS First, Second
+
+IF((First.A1 == Second.A1) AND (First.A2 == Second.A2) AND (First.A3 == Second.A3) AND (First.A4 == Second.A4) AND (First.A5 == Second.A5) AND (First.A6 == Second.A6)) THEN
+   RETURN TRUE
+ELSE
+   RETURN FALSE
+ENDIF
+ENDFCT
+
+;Function to set the acceleration of each axis with the value of 'acc'
+DEF PTP_ACC(acc: IN)
+
+INT acc
+
+$ACC_AXIS[1] = acc
+$ACC_AXIS[2] = acc
+$ACC_AXIS[3] = acc
+$ACC_AXIS[4] = acc
+$ACC_AXIS[5] = acc
+$ACC_AXIS[6] = acc
+
+END
