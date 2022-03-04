@@ -1,0 +1,69 @@
+&ACCESS RVO
+&REL 27
+&PARAM DISKPATH = KRC:\R1\Program\My_Project
+DEF  movement_test_lin ( )
+;FOLD INI;%{PE}
+  ;FOLD BASISTECH INI
+    GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+    INTERRUPT ON 3 
+    BAS (#INITMOV,0 )
+  ;ENDFOLD (BASISTECH INI)
+  ;FOLD USER INI
+    ;Make your modifications here
+
+  ;ENDFOLD (USER INI)
+;ENDFOLD (INI)
+
+;FOLD SPTP HOME Vel=100 % DEFAULT ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+;SPTP XHOME WITH $VEL_AXIS[1] = SVEL_JOINT(100.0), $TOOL = STOOL2(FHOME), $BASE = SBASE(FHOME.BASE_NO), $IPO_MODE = SIPO_MODE(FHOME.IPO_FRAME), $LOAD = SLOAD(FHOME.TOOL_NO), $ACC_AXIS[1] = SACC_JOINT(PDEFAULT), $APO = SAPO_PTP(PDEFAULT), $GEAR_JERK[1] = SGEAR_JERK(PDEFAULT), $COLLMON_TOL_PRO[1] = USE_CM_PRO_VALUES(0)
+PTP HOME                                    ;Go to Home position
+;ENDFOLD
+
+;-----------------------------------------------------------------------------
+;           LINEAR MOTION - HORIZONTAL AND DIAGONAL (MIRRORED 'Z')
+;-----------------------------------------------------------------------------
+
+TraceStart("New_KSS_8.5_1.xml", "Linear_updated_sim")   ;Start recording trace with the mentioned Trace configuration
+
+$BWDSTART = FALSE
+PDAT_ACT=PPDATP
+FDAT_ACT=FP
+BAS (#PTP_PARAMS,100)
+SET_CD_PARAMS(0)
+
+$VEL.CP = 1                                             ;Set Cartesian velocity to 50% of the maximum value
+PTP P1                                                  ;PTP movement to Point P1
+
+$ORI_TYPE = #CONSTANT                                   ;Set Orientation of the TCP to be CONSTANT
+LIN P2                                                  ;Linear movement to Point P2
+$ORI_TYPE = #JOINT                                      ;Set Orientation of the TCP to be JOINT type
+LIN P3                                                  ;Linear movement to Point P3
+LIN P4                                                  ;Linear movement to Point P4
+
+TraceStop()
+
+PTP HOME                                                ;Go to Home position
+
+;-----------------------------------------------------------------------------
+;                    LINEAR VERTICAL MOTION
+;-----------------------------------------------------------------------------
+TraceStart("New_KSS_8.5_1.xml", "Linear_vertical_sim")  ;Start recording trace with the mentioned Trace configuration
+
+$VEL.CP = 1                                             ;Set Cartesian velocity to 50% of the maximum value
+PTP P1                                                  ;PTP movement to Point P1
+
+$ORI_TYPE = #JOINT                                      ;Set Orientation of the TCP to be JOINT type
+LIN P3                                                  ;Linear movement to Point P3
+
+WAIT SEC 2                                              ;Set a delay of 2 seconds
+
+LIN P1                                                  ;Linear movement to Point P1
+
+PTP HOME                                                ;Go to Home position
+
+TraceStop()
+
+END

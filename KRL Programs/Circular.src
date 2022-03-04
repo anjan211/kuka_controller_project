@@ -1,0 +1,61 @@
+&ACCESS RVO
+&REL 2
+&PARAM DISKPATH = KRC:\R1\Program\My_Project
+DEF  Circular ( )
+;FOLD INI;%{PE}
+  ;FOLD BASISTECH INI
+    GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+    INTERRUPT ON 3 
+    BAS (#INITMOV,0 )
+  ;ENDFOLD (BASISTECH INI)
+  ;FOLD USER INI
+    ;Make your modifications here
+
+  ;ENDFOLD (USER INI)
+;ENDFOLD (INI)
+
+;FOLD SPTP HOME Vel=100 % DEFAULT ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+PTP XHOME                                              ;Go to Home position
+;ENDFOLD
+
+$BWDSTART = FALSE
+PDAT_ACT = PPDATP
+FDAT_ACT = FP
+BAS(#PTP_PARAMS, 100)
+SET_CD_PARAMS(0)
+
+
+PTP P1                                            ;PTP movement to Point P1
+$CIRC_TYPE = #BASE                                ;Set control of circular movement to be BASE related
+$ORI_TYPE = #CONSTANT                             ;Set Orientation of the TCP to be CONSTANT
+TraceStart("New_KSS_8.5_1.xml", "roll")           ;Start recording trace with the mentioned Trace configuration
+CIRC P_aux1, P2, CA 360.0
+TraceStop()
+PTP XHOME
+
+PTP P3                                            ;PTP movement to Point P3
+$CIRC_TYPE = #BASE                                ;Set control of circular movement to be BASE related
+$ORI_TYPE = #CONSTANT                             ;Set Orientation of the TCP to be CONSTANT
+TraceStart("New_KSS_8.5_1.xml", "yaw")            ;Start recording trace with the mentioned Trace configuration
+CIRC P_aux2, P4, CA 360.0
+TraceStop()
+PTP XHOME
+
+PTP P5                                            ;PTP movement to Point P5
+$CIRC_TYPE = #BASE                                ;Set control of circular movement to be BASE related
+$ORI_TYPE = #CONSTANT                             ;Set Orientation of the TCP to be CONSTANT
+TraceStart("New_KSS_8.5_1.xml", "pitch")          ;Start recording trace with the mentioned Trace configuration
+CIRC P_aux3, P6, CA 360.0
+TraceStop()
+
+;FOLD SPTP HOME Vel=100 % DEFAULT ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.basistech.inlineforms.movement.spline; Kuka.IsGlobalPoint=False; Kuka.PointName=HOME; Kuka.BlendingEnabled=False; Kuka.MoveDataPtpName=DEFAULT; Kuka.VelocityPtp=100; Kuka.VelocityFieldEnabled=True; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; IlfCommand=SPTP
+;ENDFOLD
+PTP XHOME                                              ;Go to Home position
+;ENDFOLD
+
+END
